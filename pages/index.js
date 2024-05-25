@@ -72,13 +72,25 @@ export default function Home() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const response = await fetch('/api/get-summary', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ bookTitle, author }),
-    });
-    const data = await response.json();
-    setSummary(data.summary);
+    console.log('Form submitted');
+    console.log('Book Title:', bookTitle);
+    console.log('Author:', author);
+    try {
+      const response = await fetch('/api/get-summary', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ bookTitle, author }),
+      });
+      console.log('Response status:', response.status);
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      const data = await response.json();
+      console.log('Summary data:', data);
+      setSummary(data.summary);
+    } catch (error) {
+      console.error('Fetch error:', error);
+    }
   };
 
   return (

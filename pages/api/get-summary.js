@@ -8,6 +8,12 @@ const configuration = new Configuration({
 const openai = new OpenAIApi(configuration);
 
 export default async function handler(req, res) {
+  console.log('Request received:', req.body);
+
+  if (req.method !== 'POST') {
+    return res.status(405).end(); // Method Not Allowed
+  }
+
   const { bookTitle, author } = req.body;
 
   const prompt = `
@@ -56,8 +62,10 @@ export default async function handler(req, res) {
     });
 
     const result = completion.data.choices[0].message.content.trim();
+    console.log('Generated summary:', result);
     res.status(200).json({ summary: result });
   } catch (error) {
+    console.error('Error generating summary:', error);
     res.status(500).json({ error: error.message });
   }
 }
