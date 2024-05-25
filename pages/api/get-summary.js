@@ -1,11 +1,9 @@
-import { Configuration, OpenAIApi } from 'openai';
+import OpenAI from 'openai';
 
-const configuration = new Configuration({
+const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
   organization: process.env.OPENAI_ORG_ID,
 });
-
-const openai = new OpenAIApi(configuration);
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -54,12 +52,12 @@ export default async function handler(req, res) {
   `;
 
   try {
-    const completion = await openai.createChatCompletion({
+    const completion = await openai.chat.completions.create({
       model: "gpt-3.5-turbo",
       messages: [{ role: "user", content: prompt }],
     });
 
-    const result = completion.data.choices[0].message.content.trim();
+    const result = completion.choices[0].message.content.trim();
     res.status(200).json({ summary: result });
   } catch (error) {
     console.error('Error generating summary:', error);
